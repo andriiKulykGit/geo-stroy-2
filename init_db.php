@@ -3,7 +3,35 @@
 $dbFile = __DIR__ . '/database.sqlite';
 
 if (file_exists($dbFile)) {
-    exit("База данных уже существует.\n");
+    exit("База данных уже существует.
+");
+}
+
+function loadEnv($path) {
+    if (!file_exists($path)) {
+        exit("Файл .env не найден. Создайте его.
+");
+    }
+    
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            list($key, $value) = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value);
+            $_ENV[$key] = $value;
+            putenv("$key=$value");
+        }
+    }
+}
+
+// Загрузка переменных окружения из .env файла
+loadEnv(__DIR__ . '/.env');
+
+// Проверка наличия необходимых переменных
+if (!getenv('ADMIN_NAME') || !getenv('ADMIN_EMAIL') || !getenv('ADMIN_PASSWORD')) {
+    exit("В файле .env отсутствуют необходимые переменные (ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD).
+");
 }
 
 $db = new PDO('sqlite:' . $dbFile);
