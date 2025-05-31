@@ -1,0 +1,12 @@
+{
+  "name": "geo-stroy",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "css-minify": "^2.1.0"
+  },
+  "peerDependencies": {},
+  "scripts": {
+    "css:minify": "css-minify -d ./admin/src/assets/css -o ./admin/assets/css/"
+  }
+}
