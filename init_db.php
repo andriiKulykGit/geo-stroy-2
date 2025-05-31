@@ -1,5 +1,5 @@
 <?php
-// init_db.php — запускать один раз для инициализации БД
+require_once __DIR__ . '/../includes/functions.php';
 $dbFile = __DIR__ . '/database.sqlite';
 
 if (file_exists($dbFile)) {
@@ -7,23 +7,7 @@ if (file_exists($dbFile)) {
 ");
 }
 
-function loadEnv($path) {
-    if (!file_exists($path)) {
-        exit("Файл .env не найден. Создайте его.
-");
-    }
-    
-    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
-            list($key, $value) = explode('=', $line, 2);
-            $key = trim($key);
-            $value = trim($value);
-            $_ENV[$key] = $value;
-            putenv("$key=$value");
-        }
-    }
-}
+
 
 // Загрузка переменных окружения из .env файла
 loadEnv(__DIR__ . '/.env');
@@ -104,5 +88,13 @@ CREATE TABLE password_reset_codes (
 ";
 
 $db->exec($sql);
+
+$adminName = getenv('ADMIN_NAME');
+$adminEmail = getenv('ADMIN_EMAIL');
+$adminPassword = password_hash(getenv('ADMIN_PASSWORD'), PASSWORD_DEFAULT);
+$adminRole = 'admin';
+
+$stmt = $db->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
+$stmt->execute([$adminName, $adminEmail, $adminPassword, $adminRole]);
 
 echo "База данных и таблицы успешно созданы.\n";
