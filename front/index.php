@@ -3,6 +3,7 @@ require_once __DIR__ . '/../includes/functions.php';
 ?>
 
 <?php require_once __DIR__ . '/parts/head.php'; ?>
+
 <body>
   <div class="wrapper" data-barba="wrapper">
     <main class="main" data-barba="container" data-barba-namespace="login">
@@ -21,8 +22,8 @@ require_once __DIR__ . '/../includes/functions.php';
       <footer>
         <div class="container">
           <p class="footer-buttons">
-            <a data-aos="fade-up" href="/projects.html" class="button">Проекты</a>
-            <a data-aos="fade-up" href="/reports.html" class="button button_secondary">Мои отчеты</a>
+            <a data-aos="fade-up" href="projects.php" class="button">Проекты</a>
+            <a data-aos="fade-up" href="reports.php" class="button button_secondary">Мои отчеты</a>
           </p>
         </div>
       </footer>
@@ -30,5 +31,4 @@ require_once __DIR__ . '/../includes/functions.php';
   </div>
 </body>
 <?php require_once __DIR__ . '/parts/scripts.php' ?>
-
 </html>
