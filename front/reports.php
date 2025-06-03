@@ -11,9 +11,6 @@ require_login();
     <main class="main main_gray" data-barba="container" data-barba-namespace="login">
       <?php the_header('Мои отчеты') ?>
       <div class="projects">
-        <?php 
-        echo basename($_SERVER['PHP_SELF']);
-        ?>
         <a class="report" data-aos="fade-up" href="/report.html" draggable="false">
           <div class="report__inner">
             <div class="report__col">
