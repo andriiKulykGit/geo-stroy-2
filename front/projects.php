@@ -48,32 +48,7 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
           echo 'Проекты пока не добавлены';
         endif; ?>
       </div>
-      <footer class="footer" data-aos="fade-up">
-        <div class="container">
-          <nav class="nav">
-            <ul class="nav__list">
-              <li class="nav__item">
-                <a href="/projects.html" class="nav__link nav__link_active">
-                  <span class="icon icon_checklist icon_big"></span>
-                  <span>Проекты</span>
-                </a>
-              </li>
-              <li class="nav__item">
-                <a href="/create-report.html" class="nav__link nav__link_add">
-                  <span class="icon icon_add icon_big"></span>
-                  <span>Создать отчет</span>
-                </a>
-              </li>
-              <li class="nav__item">
-                <a href="/reports.html" class="nav__link">
-                  <span class="icon icon_list icon_big"></span>
-                  <span>Мои отчеты</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </footer>
+      <?php the_footer() ?>
     </main>
   </div>
   <?php require_once __DIR__ . '/parts/scripts.php' ?>
