@@ -112,16 +112,15 @@ function the_footer($visibleItems = [true, true, true]) {
                 <ul class="nav__list">';
 
     foreach ($items as $index => $item) {
-        if ($visibleItems[$index]) {
-            $activeClass = $currentPage === $item['link'] ? 'nav__link_active' : '';
-        }
+        if (!$visibleItems[$index]) continue;
 
+        $activeClass = $currentPage === $item['link'] ? 'nav__link_active' : '';
         $addClass = $item['link'] === 'create-report.php'? ' nav__link_add' : '';
 
         echo '
         <li class="nav__item">
             <a href="' . $item['link'] . '" class="nav__link ' . $activeClass . $addClass. '">
-                <span class="icon ' . $item['icon'] . ' icon_big"></span>
+                <span class="icon ' . $item['icon'] . ' icon_medium"></span>
                 <span>' . $item['text'] . '</span>
             </a>
         </li>
