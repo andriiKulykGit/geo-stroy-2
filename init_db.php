@@ -70,6 +70,8 @@ CREATE TABLE projects (
         'Полевые работы',
         'Завершено'
     )) NOT NULL,
+    start_year INTEGER,
+    end_year INTEGER,
     created_by INTEGER,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     reports_ids TEXT
