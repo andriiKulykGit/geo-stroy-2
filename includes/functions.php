@@ -55,7 +55,8 @@ function e($string)
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
-function the_header($title = '', $isFavoritesVisible = false) {
+function the_header($title = '', $isFavoritesVisible = false)
+{
     $favorites = '';
 
     if ($isFavoritesVisible) {
@@ -82,6 +83,50 @@ function the_header($title = '', $isFavoritesVisible = false) {
             </div>
         </div>
     </header>';
+}
 
-    return;
+function the_footer($visibleItems = [true, true, true]) {
+    $currentPage = basename($_SERVER['PHP_SELF']);
+
+    $items = [
+        [
+            'icon' => 'icon_checklist',
+            'text' => 'Проекты',
+            'link' => 'projects.php',
+        ],
+        [
+            'icon' => 'icon_add',
+            'text' => 'Создать отчет',
+            'link' => 'create-report.php',
+        ],
+        [
+            'icon' => 'icon_list',
+            'text' => 'Мои отчеты',
+            'link' => 'reports.php',
+        ],
+    ];
+
+    echo '<footer class="footer" data-aos="fade-up">
+            <div class="container">
+            <nav class="nav">
+                <ul class="nav__list">';
+
+    foreach ($items as $index => $item) {
+        if ($visibleItems[$index]) {
+            $activeClass = $currentPage === $item['link'] ? 'nav__link_active' : '';
+        }
+
+        $addClass = $item['link'] === 'create-report.php'? ' nav__link_add' : '';
+
+        echo '
+        <li class="nav__item">
+            <a href="' . $item['link'] . '" class="nav__link ' . $activeClass . $addClass. '">
+                <span class="icon ' . $item['icon'] . ' icon_big"></span>
+                <span>' . $item['text'] . '</span>
+            </a>
+        </li>
+        ';
+    }
+
+    echo '</ul></nav></div></footer>';
 }
