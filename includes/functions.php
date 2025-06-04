@@ -55,6 +55,26 @@ function e($string)
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
+function format_date($date_string)
+{
+    $date = new DateTime($date_string);
+    return $date->format('d.m.Y');
+}
+
+function get_state_class($state)
+{
+    $classes = [
+        'Разработка тех. проекта' => 'state_gray',
+        'Разработка проекта ОВОС' => 'state_blue',
+        'Проведение общ. слушаний' => 'state_purple',
+        'Мобилизация' => 'state_red',
+        'Полевые работы' => 'state_yellow',
+        'Завершено' => 'state_green'
+    ];
+
+    return $classes[$state] ?? 'state_gray';
+}
+
 function the_header($title = '', $isFavoritesVisible = false)
 {
     $favorites = '';
@@ -85,7 +105,8 @@ function the_header($title = '', $isFavoritesVisible = false)
     </header>';
 }
 
-function the_footer($visibleItems = [true, true, true]) {
+function the_footer($visibleItems = [true, true, true])
+{
     $currentPage = basename($_SERVER['PHP_SELF']);
 
     $items = [
@@ -115,11 +136,11 @@ function the_footer($visibleItems = [true, true, true]) {
         if (!$visibleItems[$index]) continue;
 
         $activeClass = $currentPage === $item['link'] ? 'nav__link_active' : '';
-        $addClass = $item['link'] === 'create-report.php'? ' nav__link_add' : '';
+        $addClass = $item['link'] === 'create-report.php' ? ' nav__link_add' : '';
 
         echo '
         <li class="nav__item">
-            <a href="' . $item['link'] . '" class="nav__link ' . $activeClass . $addClass. '">
+            <a href="' . $item['link'] . '" class="nav__link ' . $activeClass . $addClass . '">
                 <span class="icon ' . $item['icon'] . ' icon_medium"></span>
                 <span>' . $item['text'] . '</span>
             </a>

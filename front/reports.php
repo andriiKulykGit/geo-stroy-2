@@ -1,7 +1,20 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../db.php';
 
 require_login();
+
+// Получаем текущего пользователя
+$user = current_user();
+$user_id = $user['id'];
+
+// Получаем отчеты только текущего пользователя
+$stmt = $pdo->prepare("SELECT r.*, p.name as project_name FROM reports r 
+                      LEFT JOIN projects p ON r.project_id = p.id 
+                      WHERE r.user_id = ? 
+                      ORDER BY r.created_at DESC");
+$stmt->execute([$user_id]);
+$reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <?php require_once __DIR__ . '/parts/head.php'; ?>
@@ -11,32 +24,41 @@ require_login();
     <main class="main main_gray" data-barba="container" data-barba-namespace="login">
       <?php the_header('Мои отчеты') ?>
       <div class="projects">
-        <a class="report" data-aos="fade-up" href="/report.html" draggable="false">
-          <div class="report__inner">
-            <div class="report__col">
-              <div class="report__body">
-                <div class="report__state">
-                  <div class="state state_green">
-                    Завершено
+        <?php if (count($reports) > 0): ?>
+          <?php foreach ($reports as $report): ?>
+            <a class="report" data-aos="fade-up" href="#" draggable="false">
+              <div class="report__inner">
+                <div class="report__col">
+                  <div class="report__body">
+                    <div class="report__state">
+                      <div class="state <?= get_state_class($report['state']); ?>">
+                        <?= $report['state'] ?>
+                      </div>
+                    </div>
+                    <p class="report__name">
+                      <span><?= 'Отчет №' . $report['id'] ?></span>
+                      <span class="report__date">От <?= format_date($report['created_at']); ?></span>
+                    </p>
                   </div>
                 </div>
-                <p class="report__name">
-                  <span>Отчет №4123</span>
-                  <span class="report__date">04.04.2025</span>
-                </p>
+                <div class="report__col">
+                  <div class="report__link">
+                    <span class="icon icon_large icon_chevrown-right icon_current-color"></span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="report__col">
-              <div class="report__link">
-                <span class="icon icon_large icon_chevrown-right icon_current-color"></span>
-              </div>
-            </div>
+            </a>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="no-reports" data-aos="fade-up">
+            <p>У вас пока нет отчетов</p>
           </div>
-        </a>
+        <?php endif; ?>
       </div>
       <?php the_footer() ?>
     </main>
   </div>
   <?php require_once __DIR__ . '/parts/scripts.php' ?>
 </body>
+
 </html>
