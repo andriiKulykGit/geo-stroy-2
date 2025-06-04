@@ -5,6 +5,7 @@ import { init as initProjectSwipe } from './modules/projectSwipe.js'
 import { init as initDropdown } from './modules/dropdown.js'
 import { init as initAos } from './modules/aos.js'
 import { init as initBarba } from './modules/barba.js'
+import { init as initFiles } from './modules/files.js'
 
 document.addEventListener('DOMContentLoaded', () => {
   initBubbleInputs()
@@ -12,4 +13,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initDropdown()
   initAos()
   initBarba()
+  initFiles()
 })
