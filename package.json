@@ -9,7 +9,6 @@
     "js-cookie": "^3.0.5"
   },
   "scripts": {
-    "build:js": "bun build front/src/js/main.js --outdir=front/assets/js --minify",
-    "watch:js": "bun build front/src/js/main.js --outdir=front/assets/js --watch"
+    "js": "bun build front/src/js/main.js --outdir=front/assets/js --minify --watch"
   }
 }
