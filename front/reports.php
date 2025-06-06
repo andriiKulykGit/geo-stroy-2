@@ -26,7 +26,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="projects">
         <?php if (count($reports) > 0): ?>
           <?php foreach ($reports as $report): ?>
-            <a class="report" data-aos="fade-up" href="#" draggable="false">
+            <a class="report" data-aos="fade-up" href="report.php?id=<?= $report['id'] ?>" draggable="false">
               <div class="report__inner">
                 <div class="report__col">
                   <div class="report__body">

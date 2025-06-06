@@ -1,15 +1,17 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../db.php';
-
 require_login();
 
-// Получаем текущего пользователя
 $user = current_user();
 $favorites = json_decode($user['favorites'] ?? '[]', true);
 
-$stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
-$projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (!empty($favorites)) {
+  $placeholders = str_repeat('?,', count($favorites) - 1) . '?';
+  $stmt = $pdo->prepare("SELECT * FROM projects WHERE id IN ($placeholders) ORDER BY created_at DESC");
+  $stmt->execute($favorites);
+  $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <?php require_once __DIR__ . '/parts/head.php'; ?>
@@ -17,19 +19,16 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
   <div class="wrapper" data-barba="wrapper">
     <main class="main main_gray" data-barba="container" data-barba-namespace="login">
-      <?php the_header('Список проектов', true) ?>
+      <?php the_header('Избранные проекты') ?>
       <div class="projects">
         <?php
         if ($projects):
           foreach ($projects as $p):
-            $inFavorites = in_array($p['id'], $favorites) ? ' in-favorites' : '';
-
-            if (in_array($p['id'], $favorites)) continue;
         ?>
-            <a class="project project_favorite" data-aos="fade-up" href="/report.html" data-id="<?= $p['id'] ?>" draggable="false">
-              <div class="project__background project__background_favorite">
-                <span class="icon icon_star icon_medium icon_current-color"></span>
-                <span>В избранное</span>
+            <a class="project project_trash" data-aos="fade-up" data-id="<?= $p['id'] ?>" href="/report.html" draggable="false">
+              <div class="project__background project__background_trash">
+                <span class="icon icon_trash icon_medium icon_current-color"></span>
+                <span>Удалить</span>
               </div>
               <div class="project__inner">
                 <div class="project__col">
@@ -52,8 +51,9 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php
           endforeach;
         else:
-          echo 'Проекты пока не добавлены или они находяться в избранных';
-        endif; ?>
+          echo '<span class="container">У вас нет избранных проектов</span>';
+        endif;
+        ?>
       </div>
       <?php the_footer() ?>
     </main>
