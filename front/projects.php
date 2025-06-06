@@ -26,7 +26,7 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (in_array($p['id'], $favorites)) continue;
         ?>
-            <a class="project project_favorite" data-aos="fade-up" href="/report.html" data-id="<?= $p['id'] ?>" draggable="false">
+            <a class="project project_favorite" data-aos="fade-up" href="create-report.php?project_id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" draggable="false">
               <div class="project__background project__background_favorite">
                 <span class="icon icon_star icon_medium icon_current-color"></span>
                 <span>В избранное</span>

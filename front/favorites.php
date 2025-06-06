@@ -25,7 +25,7 @@ if (!empty($favorites)) {
         if ($projects):
           foreach ($projects as $p):
         ?>
-            <a class="project project_trash" data-aos="fade-up" data-id="<?= $p['id'] ?>" href="/report.html" draggable="false">
+            <a class="project project_trash" data-aos="fade-up" data-id="<?= $p['id'] ?>" href="create-report.php?project_id=<?= $p['id'] ?>" draggable="false">
               <div class="project__background project__background_trash">
                 <span class="icon icon_trash icon_medium icon_current-color"></span>
                 <span>Удалить</span>

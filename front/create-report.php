@@ -40,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $stmt = $pdo->prepare("INSERT INTO reports (project_id, user_id, state, comment, files, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
   $stmt->execute([$project_id, $user_id, $state, $comment, json_encode($uploaded_files)]);
 
-  // Перенаправляем на страницу успешной отправки
   header("Location: success.php");
   exit;
 }
@@ -48,13 +47,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php require_once __DIR__ . '/parts/head.php'; ?>
 
-<body>
-  <div class="wrapper" data-barba="wrapper">
 
+<body>
+  <?php
+  if (isset($_GET['project_id'])) {
+    $quary_project_id = $_GET['project_id'];
+    $foundProject = null;
+
+    foreach ($projects as $p) {
+      if ($p['id'] == $quary_project_id) {
+        $foundProject = $p;
+        break;
+      }
+    }
+  }
+  ?>
+  <div class="wrapper" data-barba="wrapper">
     <main class="main main_gray" data-barba="container" data-barba-namespace="login">
       <?php the_header('Создать отчет') ?>
       <div class="create">
         <div class="container">
+
           <form action="create-report.php" method="POST" class="create__body" id="form">
             <input type="hidden" name="uploaded_files" id="uploaded_files" value="[]">
             <div class="select" data-aos="fade-up" style="z-index:3">
@@ -63,7 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <span class="icon icon_medium icon_location icon_current-color"></span>
                 </div>
                 <div class="select__inner">
-                  <div class="select__value" id="project" data-value></div>
+                  <div
+                    class="select__value"
+                    id="project"
+                    data-value="<?php if ($foundProject) echo $foundProject['id'] ?>"><?php
+                                                                                      if ($foundProject) {
+                                                                                        echo '<span>' . $foundProject['name'] . '</span>';
+                                                                                      }
+                                                                                      ?></div>
                   <div class="select__label">Проект</div>
                 </div>
                 <div class="select__chevron">
@@ -250,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         elements.projectId.value = elements.project.dataset.value;
         const stateValue = elements.state.dataset.value.trim();
         console.log(stateValue);
-        
+
 
         if (!VALID_STATES.includes(stateValue)) {
           e.preventDefault();
