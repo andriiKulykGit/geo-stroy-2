@@ -38,7 +38,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>ID</th>
                       <th>Имя</th>
                       <th>Email</th>
-                      <th>Пароль</th>
                       <th>Роль</th>
                       <th>Действия</th>
                     </tr>
@@ -48,7 +47,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>ID</th>
                       <th>Имя</th>
                       <th>Email</th>
-                      <th>Пароль</th>
                       <th>Роль</th>
                       <th>Действия</th>
                     </tr>
@@ -59,7 +57,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= e($user['id']) ?></td>
                         <td><?= e($user['name']) ?></td>
                         <td><?= e($user['email']) ?></td>
-                        <td><?= e($user['password']) ?></td>
                         <td><?= e($user['role']) ?></td>
                         <td>
                           <a href="user_edit.php?id=<?= $user['id'] ?>">Редактировать</a> |

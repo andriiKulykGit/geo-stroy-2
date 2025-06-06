@@ -11,7 +11,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
   $email = $_POST['email'];
-  $password = $_POST['password'];
+  $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
   $role = $_POST['role'];
 
   $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?,  password = ?, role = ? WHERE id = ?");
