@@ -6,7 +6,7 @@ require_login();
 $user = current_user();
 
 $stmt = $pdo->query("SELECT * FROM reports ORDER BY created_at DESC");
-$projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <?php require_once __DIR__ . '/parts/head.php'; ?>
@@ -28,7 +28,7 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
               Отчеты
             </div>
             <div class="card-body">
-              <?php if (count($projects) === 0): ?>
+              <?php if (count($reports) === 0): ?>
                 <p class="mb-0">Нет отчетов.</p>
               <?php else: ?>
                 <table id="datatablesSimple">
@@ -38,6 +38,8 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>Название проекта</th>
                       <th>Стадия</th>
                       <th>Комментарий</th>
+                      <th>Файлы</th>
+                      <th>Дата публикации</th>
                       <th>Действия</th>
                     </tr>
                   </thead>
@@ -47,18 +49,41 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>Название проекта</th>
                       <th>Стадия</th>
                       <th>Комментарий</th>
+                      <th>Файлы</th>
+                      <th>Дата публикации</th>
                       <th>Действия</th>
                     </tr>
                   </tfoot>
                   <tbody>
-                    <?php foreach ($projects as $project): ?>
+                    <?php foreach ($reports as $r): ?>
                       <tr>
-                        <td><?= e($project['id']) ?></td>
-                        <td><?= e($project['name']) ?></td>
-                        <td><?= e($project['state']) ?></td>
-                        <td><?= e($project['comment']) ?></td>
+                        <td><?= e($r['id']) ?></td>
                         <td>
-                          <a href="project_delete.php?id=<?= $project['id'] ?>" onclick="return confirm('Удалить отчет?')">Удалить</a>
+                          <?php
+                            $stmt = $pdo->prepare("SELECT name FROM projects WHERE id = ?");
+                            $stmt->execute([$r['project_id']]);
+                            $project = $stmt->fetch();
+                            echo e($project['name'] ?? '-');
+                          ?>
+                        </td>
+                        <td><?= e($r['state']) ?></td>
+                        <td><?= e($r['comment']) ?></td>
+                        <td>
+                          <?php
+                            $files = json_decode($r['files']);
+
+                            if ($files) {
+                              foreach ($files as $f) {
+                                echo '<a href="/uploads/' . $f . '" target="_blank">' . $f . '</a><br>';
+                              }
+                            } else {
+                              echo '-';
+                            }
+                            ?>
+                        </td>
+                        <td><?= e($r['created_at']) ?></td>
+                        <td>
+                          <a href="report_delete.php?id=<?= $r['id'] ?>" onclick="return confirm('Удалить отчет?')">Удалить</a>
                         </td>
                       </tr>
                     <?php endforeach; ?>
