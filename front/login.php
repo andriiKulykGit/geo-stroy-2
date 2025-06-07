@@ -31,7 +31,7 @@ if (is_logged_in()) {
               <span class="icon icon_lock icon_current-color icon_medium"></span>
             </label>
           </div>
-          <a data-aos="fade-up" href="password-recovery.php" class="form__forgot">Забыли пароль?</a>
+          <a data-aos="fade-up" href="reset-password.php" class="form__forgot">Забыли пароль?</a>
           <button type="submit" data-aos="fade-up" class="button">Войти</button>
         </form>
       </div>
@@ -40,4 +40,5 @@ if (is_logged_in()) {
   </div>
   <?php require_once __DIR__ . '/parts/scripts.php' ?>
 </body>
+
 </html>

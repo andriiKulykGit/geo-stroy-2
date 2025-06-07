@@ -150,3 +150,45 @@ function the_footer($visibleItems = [true, true, true])
 
     echo '</ul></nav></div></footer>';
 }
+
+function send_reset_code($email, $code) {
+    $config = require __DIR__ . '/../config.php';
+
+    $subject = 'Восстановление пароля - ' . $config['site_name'];
+
+    $message = "
+    <html>
+    <head>
+        <title>Восстановление пароля</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .code { font-size: 24px; font-weight: bold; color: #007bff; padding: 10px; background: #f8f9fa; text-align: center; }
+            .footer { margin-top: 20px; font-size: 12px; color: #666; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <h2>Восстановление пароля</h2>
+            <p>Здравствуйте!</p>
+            <p>Вы запросили восстановление пароля. Для продолжения используйте следующий код:</p>
+            <div class='code'>{$code}</div>
+            <p>Если вы не запрашивали восстановление пароля, проигнорируйте это письмо.</p>
+            <div class='footer'>
+                <p>Это письмо отправлено автоматически, не отвечайте на него.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    ";
+
+    $headers = array(
+        'MIME-Version: 1.0',
+        'Content-type: text/html; charset=UTF-8',
+        'From: ' . $config['site_name'] . ' <noreply@' . $_SERVER['HTTP_HOST'] . '>',
+        'Reply-To: noreply@' . $_SERVER['HTTP_HOST'],
+        'X-Mailer: PHP/' . phpversion()
+    );
+
+    return mail($email, $subject, $message, implode("\r\n", $headers));
+}
