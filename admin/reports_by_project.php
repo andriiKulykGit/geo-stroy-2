@@ -39,30 +39,46 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Комментарий</th>
                     <th>Стадия</th>
+                    <th>Комментарий</th>
                     <th>Файлы</th>
+                    <th>Дата публикации</th>
+                    <th>Действия</th>
                   </tr>
                 </thead>
                 <tfoot>
                   <tr>
                     <th>ID</th>
-                    <th>Комментарий</th>
                     <th>Стадия</th>
+                    <th>Комментарий</th>
                     <th>Файлы</th>
+                    <th>Дата публикации</th>
+                    <th>Действия</th>
                   </tr>
                 </tfoot>
                 <tbody>
-                  <?php foreach ($reports as $report): ?>
+                  <?php foreach ($reports as $r): ?>
                     <tr>
-                      <td><?= e($report['id']) ?></td>
-                      <td><?= e($report['comment']) ?></td>
-                      <td><?= e($report['state']) ?></td>
-                      <td>
-                        <?php foreach (json_decode($report['files'] ?? '[]') as $file): ?>
-                          <a href="/uploads/<?= e($file) ?>" target="_blank"><?= e($file) ?></a><br>
-                        <?php endforeach; ?>
-                      </td>
+                    <td><?= e($r['id']) ?></td>
+                        <td><?= e($r['state']) ?></td>
+                        <td><?= e($r['comment']) ?></td>
+                        <td>
+                          <?php
+                            $files = json_decode($r['files']);
+
+                            if ($files) {
+                              foreach ($files as $f) {
+                                echo '<a href="/uploads/' . $f . '" target="_blank">' . $f . '</a><br>';
+                              }
+                            } else {
+                              echo '-';
+                            }
+                            ?>
+                        </td>
+                        <td><?= e($r['created_at']) ?></td>
+                        <td>
+                          <a href="report_delete.php?id=<?= $r['id'] ?>" onclick="return confirm('Удалить отчет?')">Удалить</a>
+                        </td>
                     </tr>
                   <?php endforeach; ?>
                 </tbody>
