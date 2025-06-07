@@ -44,3 +44,7 @@
   font-weight: 400;
   color: inherit;
 }
+
+.project__date span{
+  min-width: 4ch;
+}
