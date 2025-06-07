@@ -7,9 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
   $seismic = $_POST['seismic'];
   $state = $_POST['state'];
+  $startYear = $_POST['start_year'];
+  $endYear = $_POST['end_year'];
 
-  $stmt = $pdo->prepare("INSERT INTO projects (name, seismic, state, reports_ids) VALUES (?, ?, ?, ?)");
-  $stmt->execute([$name, $seismic, $state, json_encode([])]);
+  $stmt = $pdo->prepare("INSERT INTO projects (name, seismic, state, reports_ids, start_year, start_year) VALUES (?, ?, ?, ?, ?, ?)");
+  $stmt->execute([$name, $seismic, $state, json_encode([]), $startYear, $endYear]);
 
   header("Location: projects.php");
   exit;
@@ -58,6 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option>Полевые работы</option>
                         <option>Завершено</option>
                       </select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="mb-1" for="inputStart">Год начала</label>
+                      <input class="form-control" id="inputStart" type="number" placeholder=" " name="start_year" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="mb-1" for="inputEnd">Год окончания</label>
+                      <input class="form-control" id="inputEnd" type="number" placeholder=" " name="end_year" required>
                     </div>
                     <div class="d-flex mt-4 mb-0">
                       <button type="submit" class="btn btn-primary ms-auto">Создать</button>
