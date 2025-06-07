@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $startYear = $_POST['start_year'];
   $endYear = $_POST['end_year'];
 
-  $stmt = $pdo->prepare("INSERT INTO projects (name, seismic, state, reports_ids, start_year, start_year) VALUES (?, ?, ?, ?, ?, ?)");
+  $stmt = $pdo->prepare("INSERT INTO projects (name, seismic, state, reports_ids, start_year, end_year) VALUES (?, ?, ?, ?, ?, ?)");
   $stmt->execute([$name, $seismic, $state, json_encode([]), $startYear, $endYear]);
 
   header("Location: projects.php");
