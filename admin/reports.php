@@ -35,18 +35,18 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Название</th>
+                      <th>Название проекта</th>
                       <th>Стадия</th>
-                      <th>Cейсмика</th>
+                      <th>Комментарий</th>
                       <th>Действия</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
                       <th>ID</th>
-                      <th>Название</th>
+                      <th>Название проекта</th>
                       <th>Стадия</th>
-                      <th>Cейсмика</th>
+                      <th>Комментарий</th>
                       <th>Действия</th>
                     </tr>
                   </tfoot>
@@ -56,11 +56,9 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= e($project['id']) ?></td>
                         <td><?= e($project['name']) ?></td>
                         <td><?= e($project['state']) ?></td>
-                        <td><?= e($project['seismic']) ?></td>
+                        <td><?= e($project['comment']) ?></td>
                         <td>
-                          <a href="project_edit.php?id=<?= $project['id'] ?>">Редактировать</a> |
-                          <a href="project_delete.php?id=<?= $project['id'] ?>" onclick="return confirm('Удалить проект?')">Удалить</a> |
-                          <a href="reports_by_project.php?project_id=<?= $project['id'] ?>">Отчеты</a>
+                          <a href="project_delete.php?id=<?= $project['id'] ?>" onclick="return confirm('Удалить отчет?')">Удалить</a>
                         </td>
                       </tr>
                     <?php endforeach; ?>

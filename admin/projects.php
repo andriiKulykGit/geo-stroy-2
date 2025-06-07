@@ -39,6 +39,8 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>Название</th>
                       <th>Стадия</th>
                       <th>Cейсмика</th>
+                      <th>Начало</th>
+                      <th>Конец</th>
                       <th>Действия</th>
                     </tr>
                   </thead>
@@ -48,6 +50,8 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>Название</th>
                       <th>Стадия</th>
                       <th>Cейсмика</th>
+                      <th>Начало</th>
+                      <th>Конец</th>
                       <th>Действия</th>
                     </tr>
                   </tfoot>
@@ -58,6 +62,8 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= e($project['name']) ?></td>
                         <td><?= e($project['state']) ?></td>
                         <td><?= e($project['seismic']) ?></td>
+                        <td><?= e($project['start_year']) ?></td>
+                        <td><?= e($project['end_year']) ?></td>
                         <td>
                           <a href="project_edit.php?id=<?= $project['id'] ?>">Редактировать</a> |
                           <a href="project_delete.php?id=<?= $project['id'] ?>" onclick="return confirm('Удалить проект?')">Удалить</a> |

@@ -12,9 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
   $state = $_POST['state'];
   $seismic = $_POST['seismic'];
+  $startYear = $_POST['start_year'];
+  $endYear = $_POST['end_year'];
 
-  $stmt = $pdo->prepare("UPDATE projects SET name = ?, seismic = ?, state = ? WHERE id = ?");
-  $stmt->execute([$name, $seismic, $state, $id]);
+  $stmt = $pdo->prepare("UPDATE projects SET name = ?, seismic = ?, state = ?, start_year = ?, end_year = ? WHERE id = ?");
+  $stmt->execute([$name, $seismic, $state, $startYear, $endYear, $id]);
 
   header("Location: projects.php");
   exit;
@@ -69,6 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         ?>
                       </select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="mb-1" for="inputStart">Год начала</label>
+                      <input class="form-control" id="inputStart" type="number" value="<?= $project['start_year'] ?>" placeholder=" " name="start_year" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="mb-1" for="inputEnd">Год окончания</label>
+                      <input class="form-control" id="inputEnd" type="number" value="<?= $project['end_year'] ?>" placeholder=" " name="end_year" required>
                     </div>
                     <div class="d-flex mt-4 mb-0">
                       <button type="submit" class="btn btn-primary ms-auto">Создать</button>
