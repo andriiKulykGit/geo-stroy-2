@@ -98,6 +98,43 @@ const init = () => {
           </div>`;
 
           parent.appendChild(fileEl);
+          
+          // Додаємо обробник події для кнопки видалення
+          const deleteBtn = fileEl.querySelector('.file__btn');
+          deleteBtn.addEventListener('click', function() {
+            // Отримуємо ім'я файлу
+            const filename = name;
+            
+            // Відправляємо запит на видалення файлу
+            fetch('/front/delete_file.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ filename: filename })
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                // Видаляємо елемент файлу з DOM
+                fileEl.remove();
+                
+                // Відправляємо подію про видалення файлу
+                const event = new CustomEvent('fileRemoved', {
+                  detail: {
+                    filename: filename
+                  }
+                });
+                document.dispatchEvent(event);
+              } else {
+                alert(`Помилка видалення файлу: ${data.message}`);
+              }
+            })
+            .catch(error => {
+              console.error('Помилка при видаленні файлу:', error);
+              alert('Помилка при видаленні файлу');
+            });
+          });
 
           return fileEl;
       }

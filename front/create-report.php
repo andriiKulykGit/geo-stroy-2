@@ -242,7 +242,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           elements.uploadedFiles.value = JSON.stringify(files);
         }
       });
-
+      
+      // Додаємо обробник події видалення файлу
+      document.addEventListener('fileRemoved', ({
+        detail
+      }) => {
+        if (detail?.filename) {
+          // Видаляємо файл зі списку
+          const index = files.indexOf(detail.filename);
+          if (index !== -1) {
+            files.splice(index, 1);
+            elements.uploadedFiles.value = JSON.stringify(files);
+          }
+        }
+      });
+      
       elements.form.addEventListener('submit', e => {
         const validations = [{
             field: elements.project.dataset.value,
