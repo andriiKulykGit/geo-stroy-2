@@ -4,7 +4,6 @@ require_once __DIR__ . '/../db.php';
 
 require_login();
 
-// Проверяем, что передан ID отчета
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
   header("Location: reports.php");
   exit;
@@ -14,20 +13,17 @@ $report_id = (int)$_GET['id'];
 $user = current_user();
 $user_id = $user['id'];
 
-// Получаем данные отчета, принадлежащего текущему пользователю
-$stmt = $pdo->prepare("SELECT r.*, p.name as project_name FROM reports r 
-                      LEFT JOIN projects p ON r.project_id = p.id 
+$stmt = $pdo->prepare("SELECT r.*, p.name as project_name FROM reports r
+                      LEFT JOIN projects p ON r.project_id = p.id
                       WHERE r.id = ? AND r.user_id = ?");
 $stmt->execute([$report_id, $user_id]);
 $report = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Если отчет не найден или не принадлежит текущему пользователю, перенаправляем на страницу со списком отчетов
 if (!$report) {
   header("Location: reports.php");
   exit;
 }
 
-// Декодируем список файлов из JSON
 $files = json_decode($report['files'], true) ?: [];
 ?>
 

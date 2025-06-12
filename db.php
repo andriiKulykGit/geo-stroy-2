@@ -1,6 +1,4 @@
 <?php
-// db.php — подключение к SQLite базе
-
 $config = require __DIR__ . '/config.php';
 
 try {
@@ -10,7 +8,3 @@ try {
 } catch (PDOException $e) {
     die("Ошибка подключения к базе данных: " . $e->getMessage());
 }
-
-
-// require_once __DIR__ . '/db.php';
-// теперь $pdo — это готовый объект подключения к SQLite

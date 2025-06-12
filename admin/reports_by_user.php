@@ -5,7 +5,6 @@ require_login();
 
 $user_id = $_GET['user_id'];
 
-// Получаем отчеты только для конкретного пользователя
 $stmt = $pdo->prepare("SELECT * FROM reports WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->execute([$user_id]);
 $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);

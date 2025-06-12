@@ -4,12 +4,9 @@ require_once __DIR__ . '/../db.php';
 
 require_login();
 
-// Получаем текущего пользователя
 $user = current_user();
 $favorites = json_decode($user['favorites'] ?? '[]', true);
 
-// Получаем проекты, назначенные текущему пользователю
-// Если пользователь админ, показываем все проекты
 if ($user['role'] === 'admin') {
   $stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
   $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);

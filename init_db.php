@@ -34,7 +34,6 @@ if (!getenv('ADMIN_NAME') || !getenv('ADMIN_EMAIL') || !getenv('ADMIN_PASSWORD')
 $db = new PDO('sqlite:' . $dbFile);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// SQL для создания таблиц
 $sql = "
 CREATE TABLE site (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

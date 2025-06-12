@@ -4,14 +4,12 @@ require_once __DIR__ . '/../db.php';
 
 require_login();
 
-// Получаем текущего пользователя
 $user = current_user();
 $user_id = $user['id'];
 
-// Получаем отчеты только текущего пользователя
-$stmt = $pdo->prepare("SELECT r.*, p.name as project_name FROM reports r 
-                      LEFT JOIN projects p ON r.project_id = p.id 
-                      WHERE r.user_id = ? 
+$stmt = $pdo->prepare("SELECT r.*, p.name as project_name FROM reports r
+                      LEFT JOIN projects p ON r.project_id = p.id
+                      WHERE r.user_id = ?
                       ORDER BY r.created_at DESC");
 $stmt->execute([$user_id]);
 $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);

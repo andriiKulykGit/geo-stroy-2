@@ -38,20 +38,19 @@ const init = () => {
         if (xhr.status === 200) {
           setFileSuccess(fileEL);
           progressBar.style.width = "100%";
-          
-          // Отправляем событие об успешной загрузке файла
+
           try {
             const response = JSON.parse(xhr.responseText);
             if (response.success && response.filename) {
-              const event = new CustomEvent('fileUploaded', {
+              const event = new CustomEvent("fileUploaded", {
                 detail: {
-                  filename: response.filename
-                }
+                  filename: response.filename,
+                },
               });
               document.dispatchEvent(event);
             }
           } catch (e) {
-            console.error('Ошибка при обработке ответа сервера:', e);
+            console.error("Ошибка при обработке ответа сервера:", e);
           }
         } else {
           setFileError(fileEL);
@@ -97,54 +96,49 @@ const init = () => {
             </div>
           </div>`;
 
-          parent.appendChild(fileEl);
-          
-          // Додаємо обробник події для кнопки видалення
-          const deleteBtn = fileEl.querySelector('.file__btn');
-          deleteBtn.addEventListener('click', function() {
-            // Отримуємо ім'я файлу
-            const filename = name;
-            
-            // Відправляємо запит на видалення файлу
-            fetch('/front/delete_file.php', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ filename: filename })
-            })
-            .then(response => response.json())
-            .then(data => {
+        parent.appendChild(fileEl);
+
+        const deleteBtn = fileEl.querySelector(".file__btn");
+        deleteBtn.addEventListener("click", function () {
+          const filename = name;
+
+          fetch("/front/delete_file.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ filename: filename }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
               if (data.success) {
-                // Видаляємо елемент файлу з DOM
                 fileEl.remove();
-                
-                // Відправляємо подію про видалення файлу
-                const event = new CustomEvent('fileRemoved', {
+
+                const event = new CustomEvent("fileRemoved", {
                   detail: {
-                    filename: filename
-                  }
+                    filename: filename,
+                  },
                 });
                 document.dispatchEvent(event);
               } else {
                 alert(`Помилка видалення файлу: ${data.message}`);
               }
             })
-            .catch(error => {
-              console.error('Помилка при видаленні файлу:', error);
-              alert('Помилка при видаленні файлу');
+            .catch((error) => {
+              console.error("Помилка при видаленні файлу:", error);
+              alert("Помилка при видаленні файлу");
             });
-          });
+        });
 
-          return fileEl;
+        return fileEl;
       }
 
       function setFileSuccess(fileEl) {
         const icon = fileEl.querySelector(".file__state .icon");
         fileEL.classList.remove("file_loading");
         fileEl.classList.add("file_success");
-        fileEl.querySelector(".file__state-text").textContent = 'Завершено';
-        icon.classList.remove("icon_loader")
+        fileEl.querySelector(".file__state-text").textContent = "Завершено";
+        icon.classList.remove("icon_loader");
         icon.classList.add("icon_circle-success");
       }
 
@@ -152,8 +146,8 @@ const init = () => {
         const icon = fileEl.querySelector(".file__state.icon");
         fileEL.classList.remove("file_loading");
         fileEl.classList.add("file_error");
-        fileEl.querySelector(".file__state-text").textContent = 'Ошибка';
-        icon.classList.remove("icon_loader")
+        fileEl.querySelector(".file__state-text").textContent = "Ошибка";
+        icon.classList.remove("icon_loader");
         icon.classList.add("icon_circle-error");
       }
     });

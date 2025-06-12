@@ -6,7 +6,6 @@ require_login();
 $stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
 $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Обработка отправки формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $project_id = $_POST['project_id'];
   $state = $_POST['state'];
@@ -14,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $user = current_user();
   $user_id = $user['id'];
 
-  // Проверяем, что state соответствует допустимым значениям
   $valid_states = [
     'Разработка тех. проекта',
     'Разработка проекта ОВОС',
@@ -30,13 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 
-  // Получаем список загруженных файлов
   $uploaded_files = [];
   if (isset($_POST['uploaded_files']) && !empty($_POST['uploaded_files'])) {
     $uploaded_files = json_decode($_POST['uploaded_files'], true);
   }
 
-  // Сохраняем отчет в базу данных
   $stmt = $pdo->prepare("INSERT INTO reports (project_id, user_id, state, comment, files, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
   $stmt->execute([$project_id, $user_id, $state, $comment, json_encode($uploaded_files)]);
 
@@ -242,13 +238,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           elements.uploadedFiles.value = JSON.stringify(files);
         }
       });
-      
-      // Додаємо обробник події видалення файлу
+
       document.addEventListener('fileRemoved', ({
         detail
       }) => {
         if (detail?.filename) {
-          // Видаляємо файл зі списку
           const index = files.indexOf(detail.filename);
           if (index !== -1) {
             files.splice(index, 1);
@@ -256,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           }
         }
       });
-      
+
       elements.form.addEventListener('submit', e => {
         const validations = [{
             field: elements.project.dataset.value,

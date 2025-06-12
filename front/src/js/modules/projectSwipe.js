@@ -56,7 +56,6 @@ const init = () => {
           (deltaX > maxSwipe * threshold && e.deltaX > 0 && isToTrashProject) ||
           (deltaX > maxSwipe * threshold && e.deltaX < 0 && isToFavoriteProject)
         ) {
-          // Получаем ID проекта из атрибута data-id или из URL
           const projectId =
             parent.getAttribute("data-id") ||
             parent.href.split("/").pop().replace(/\D/g, "");
@@ -66,11 +65,9 @@ const init = () => {
             return;
           }
 
-          // Создаем объект FormData для отправки данных
           const formData = new FormData();
           formData.append("project_id", projectId);
 
-          // Отправляем AJAX-запрос
           fetch("/front/toggle_favorite.php", {
             method: "POST",
             body: formData,

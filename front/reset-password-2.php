@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
 
-// Проверяем, что email сохранен в сессии
 if (!isset($_SESSION['reset_email'])) {
     header("Location: reset-password.php");
     exit;
