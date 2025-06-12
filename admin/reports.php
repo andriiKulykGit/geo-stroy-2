@@ -35,6 +35,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   <thead>
                     <tr>
                       <th>ID</th>
+                      <th>Автор</th>
                       <th>Название проекта</th>
                       <th>Стадия</th>
                       <th>Комментарий</th>
@@ -46,6 +47,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                   <tfoot>
                     <tr>
                       <th>ID</th>
+                      <th>Автор</th>
                       <th>Название проекта</th>
                       <th>Стадия</th>
                       <th>Комментарий</th>
@@ -58,6 +60,14 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php foreach ($reports as $r): ?>
                       <tr>
                         <td><?= e($r['id']) ?></td>
+                        <td>
+                          <?php
+                            $stmt = $pdo->prepare("SELECT name FROM users WHERE id = ?");
+                            $stmt->execute([$r['user_id']]);
+                            $user = $stmt->fetch();
+                            echo e($user['name'] ?? '-');
+                          ?>
+                        </td>
                         <td>
                           <?php
                             $stmt = $pdo->prepare("SELECT name FROM projects WHERE id = ?");
