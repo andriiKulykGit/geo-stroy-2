@@ -8,8 +8,19 @@ require_login();
 $user = current_user();
 $favorites = json_decode($user['favorites'] ?? '[]', true);
 
-$stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
-$projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Получаем проекты, назначенные текущему пользователю
+// Если пользователь админ, показываем все проекты
+if ($user['role'] === 'admin') {
+  $stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
+  $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+  $stmt = $pdo->prepare("SELECT p.* FROM projects p
+                        JOIN project_users pu ON p.id = pu.project_id
+                        WHERE pu.user_id = ?
+                        ORDER BY p.created_at DESC");
+  $stmt->execute([$user['id']]);
+  $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <?php require_once __DIR__ . '/parts/head.php'; ?>
@@ -54,7 +65,7 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php
           endforeach;
         else:
-          echo 'Проекты пока не добавлены или они находяться в избранных';
+          echo '<div class="container">Проекты пока не добавлены или вы не назначены ни на один проект</div>';
         endif; ?>
       </div>
       <?php the_footer() ?>

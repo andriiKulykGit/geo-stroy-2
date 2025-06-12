@@ -8,18 +8,61 @@ $stmt = $pdo->prepare("SELECT * FROM projects WHERE id = ?");
 $stmt->execute([$id]);
 $project = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Получаем список всех пользователей
+$stmt = $pdo->query("SELECT id, name, email FROM users WHERE role = 'user' ORDER BY name");
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Получаем список назначенных пользователей
+$stmt = $pdo->prepare("SELECT user_id FROM project_users WHERE project_id = ?");
+$stmt->execute([$id]);
+$assignedUsers = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
   $state = $_POST['state'];
   $seismic = $_POST['seismic'];
   $startYear = $_POST['start_year'];
   $endYear = $_POST['end_year'];
+  $selectedUsers = $_POST['users'] ?? [];
 
-  $stmt = $pdo->prepare("UPDATE projects SET name = ?, seismic = ?, state = ?, start_year = ?, end_year = ? WHERE id = ?");
-  $stmt->execute([$name, $seismic, $state, $startYear, $endYear, $id]);
-
-  header("Location: projects.php");
-  exit;
+  // Начинаем транзакцию
+  $pdo->beginTransaction();
+  
+  try {
+    // Обновляем проект
+    $stmt = $pdo->prepare("UPDATE projects SET name = ?, seismic = ?, state = ?, start_year = ?, end_year = ? WHERE id = ?");
+    $stmt->execute([$name, $seismic, $state, $startYear, $endYear, $id]);
+    
+    // Удаляем все существующие связи с пользователями
+    $stmt = $pdo->prepare("DELETE FROM project_users WHERE project_id = ?");
+    $stmt->execute([$id]);
+    
+    // Добавляем новые связи с пользователями
+    if (!empty($selectedUsers)) {
+      $insertValues = [];
+      $placeholders = [];
+      
+      foreach ($selectedUsers as $userId) {
+        $insertValues[] = $id;
+        $insertValues[] = $userId;
+        $placeholders[] = "(?, ?)"; 
+      }
+      
+      $placeholdersStr = implode(", ", $placeholders);
+      $stmt = $pdo->prepare("INSERT INTO project_users (project_id, user_id) VALUES " . $placeholdersStr);
+      $stmt->execute($insertValues);
+    }
+    
+    // Завершаем транзакцию
+    $pdo->commit();
+    
+    header("Location: projects.php");
+    exit;
+  } catch (Exception $e) {
+    // Откатываем транзакцию в случае ошибки
+    $pdo->rollBack();
+    set_flash('error', 'Ошибка при обновлении проекта: ' . $e->getMessage());
+  }
 }
 ?>
 
@@ -54,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php
                         $seismics = ['2D', '3D'];
                         foreach ($seismics as $s) {
-                          $selected = $s === $project['state'] ? 'selected' : '';
+                          $selected = $s === $project['seismic'] ? 'selected' : '';
                           echo "<option $selected>$s</option>";
                         }
                         ?>
@@ -80,8 +123,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <label class="mb-1" for="inputEnd">Год окончания</label>
                       <input class="form-control" id="inputEnd" type="number" value="<?= $project['end_year'] ?>" placeholder=" " name="end_year" required>
                     </div>
+                    
+                    <!-- Добавляем выбор пользователей -->
+                    <div class="mb-3">
+                      <label class="mb-1">Назначить пользователей</label>
+                      <div class="form-control" style="height: auto; max-height: 200px; overflow-y: auto;">
+                        <?php foreach ($users as $user): ?>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="users[]" value="<?= $user['id'] ?>" id="user<?= $user['id'] ?>" 
+                              <?= in_array($user['id'], $assignedUsers) ? 'checked' : '' ?>>
+                            <label class="form-check-label" for="user<?= $user['id'] ?>">
+                              <?= e($user['name']) ?> (<?= e($user['email']) ?>)
+                            </label>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+                    
                     <div class="d-flex mt-4 mb-0">
-                      <button type="submit" class="btn btn-primary ms-auto">Создать</button>
+                      <button type="submit" class="btn btn-primary ms-auto">Сохранить</button>
                     </div>
                   </form>
                 </div>

@@ -3,18 +3,55 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../db.php';
 require_login();
 
+// Получаем список всех пользователей
+$stmt = $pdo->query("SELECT id, name, email FROM users WHERE role = 'user' ORDER BY name");
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
   $seismic = $_POST['seismic'];
   $state = $_POST['state'];
   $startYear = $_POST['start_year'];
   $endYear = $_POST['end_year'];
+  $selectedUsers = $_POST['users'] ?? [];
 
-  $stmt = $pdo->prepare("INSERT INTO projects (name, seismic, state, reports_ids, start_year, end_year) VALUES (?, ?, ?, ?, ?, ?)");
-  $stmt->execute([$name, $seismic, $state, json_encode([]), $startYear, $endYear]);
-
-  header("Location: projects.php");
-  exit;
+  // Начинаем транзакцию
+  $pdo->beginTransaction();
+  
+  try {
+    // Вставляем проект
+    $stmt = $pdo->prepare("INSERT INTO projects (name, seismic, state, reports_ids, start_year, end_year) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$name, $seismic, $state, json_encode([]), $startYear, $endYear]);
+    
+    // Получаем ID созданного проекта
+    $projectId = $pdo->lastInsertId();
+    
+    // Добавляем связи с пользователями
+    if (!empty($selectedUsers)) {
+      $insertValues = [];
+      $placeholders = [];
+      
+      foreach ($selectedUsers as $userId) {
+        $insertValues[] = $projectId;
+        $insertValues[] = $userId;
+        $placeholders[] = "(?, ?)"; 
+      }
+      
+      $placeholdersStr = implode(", ", $placeholders);
+      $stmt = $pdo->prepare("INSERT INTO project_users (project_id, user_id) VALUES " . $placeholdersStr);
+      $stmt->execute($insertValues);
+    }
+    
+    // Завершаем транзакцию
+    $pdo->commit();
+    
+    header("Location: projects.php");
+    exit;
+  } catch (Exception $e) {
+    // Откатываем транзакцию в случае ошибки
+    $pdo->rollBack();
+    set_flash('error', 'Ошибка при создании проекта: ' . $e->getMessage());
+  }
 }
 ?>
 
@@ -69,6 +106,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <label class="mb-1" for="inputEnd">Год окончания</label>
                       <input class="form-control" id="inputEnd" type="number" placeholder=" " name="end_year" required>
                     </div>
+                    
+                    <!-- Добавляем выбор пользователей -->
+                    <div class="mb-3">
+                      <label class="mb-1">Назначить пользователей</label>
+                      <div class="form-control" style="height: auto; max-height: 200px; overflow-y: auto;">
+                        <?php foreach ($users as $user): ?>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="users[]" value="<?= $user['id'] ?>" id="user<?= $user['id'] ?>">
+                            <label class="form-check-label" for="user<?= $user['id'] ?>">
+                              <?= e($user['name']) ?> (<?= e($user['email']) ?>)
+                            </label>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+                    
                     <div class="d-flex mt-4 mb-0">
                       <button type="submit" class="btn btn-primary ms-auto">Создать</button>
                     </div>
