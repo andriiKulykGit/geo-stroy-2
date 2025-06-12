@@ -48,7 +48,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </a>
           <?php endforeach; ?>
         <?php else: ?>
-          <div class="no-reports" data-aos="fade-up">
+          <div class="no-reports container" data-aos="fade-up">
             <p>У вас пока нет отчетов</p>
           </div>
         <?php endif; ?>
