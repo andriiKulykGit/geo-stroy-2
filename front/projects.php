@@ -22,11 +22,13 @@ $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php
         if ($projects):
           foreach ($projects as $p):
-            $inFavorites = in_array($p['id'], $favorites) ? ' in-favorites' : '';
-
-            if (in_array($p['id'], $favorites)) continue;
+            $isFavorites = in_array($p['id'], $favorites) ? ' in-favorites' : '';
         ?>
-            <a class="project project_favorite" data-aos="fade-up" href="create-report.php?project_id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" draggable="false">
+            <a class="project project_favorite <?php
+            if($isFavorites) {
+              echo 'project_is-favorite';
+            }
+            ?>" data-aos="fade-up" href="create-report.php?project_id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" draggable="false">
               <div class="project__background project__background_favorite">
                 <span class="icon icon_star icon_medium icon_current-color"></span>
                 <span>В избранное</span>

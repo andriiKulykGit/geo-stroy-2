@@ -42,7 +42,6 @@ const init = () => {
       hammer.on("panend", (e) => {
         e.preventDefault();
         const deltaX = Math.abs(e.deltaX);
-        const direction = e.deltaX > 0 ? "В избранное" : "Удалить";
 
         parent.classList.remove("project_swipe");
 
@@ -80,12 +79,16 @@ const init = () => {
             .then((response) => response.json())
             .then((data) => {
               if (data.success) {
-                parent.style.transitionProperty = 'opacity';
-                parent.style.opacity = '0';
+                parent.classList.toggle("project_is-favorite");
 
-                setTimeout(() => {
-                  parent.remove();
-                }, 300);
+                if (parent.classList.contains("project_trash")) {
+                  parent.style.transitionProperty = "opacity";
+                  parent.style.opacity = "0";
+
+                  setTimeout(() => {
+                    parent.remove();
+                  }, 300);
+                }
               } else {
                 alert("Ошибка: " + data.message);
               }
