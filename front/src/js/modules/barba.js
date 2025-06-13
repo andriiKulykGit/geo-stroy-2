@@ -12,14 +12,12 @@ const transitionOptions = {
       opacity: 0,
     })
   },
-  beforeEnter() {
+  enter(data) {
     initBubbleInputs()
     initProjectSwipe()
     initDropdown()
     setDelay()
-    initIsIOS()
-  },
-  enter(data) {
+
     return gsap.from(data.next.container, {
       opacity: 0,
       onComplete: () => {
