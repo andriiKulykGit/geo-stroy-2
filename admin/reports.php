@@ -5,8 +5,42 @@ require_login();
 
 $user = current_user();
 
-$stmt = $pdo->query("SELECT * FROM reports ORDER BY created_at DESC");
+$author_id = isset($_GET['author_id']) ? $_GET['author_id'] : '';
+$project_id = isset($_GET['project_id']) ? $_GET['project_id'] : '';
+$state = isset($_GET['state']) ? $_GET['state'] : '';
+
+$query = "SELECT * FROM reports WHERE 1=1";
+$params = [];
+
+if (!empty($author_id)) {
+    $query .= " AND user_id = :author_id";
+    $params[':author_id'] = $author_id;
+}
+
+if (!empty($project_id)) {
+    $query .= " AND project_id = :project_id";
+    $params[':project_id'] = $project_id;
+}
+
+if (!empty($state)) {
+    $query .= " AND state = :state";
+    $params[':state'] = $state;
+}
+
+$query .= " ORDER BY created_at DESC";
+
+$stmt = $pdo->prepare($query);
+$stmt->execute($params);
 $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$authorsQuery = $pdo->query("SELECT DISTINCT u.id, u.name FROM users u JOIN reports r ON u.id = r.user_id ORDER BY u.name");
+$authors = $authorsQuery->fetchAll(PDO::FETCH_ASSOC);
+
+$projectsQuery = $pdo->query("SELECT DISTINCT p.id, p.name FROM projects p JOIN reports r ON p.id = r.project_id ORDER BY p.name");
+$projects = $projectsQuery->fetchAll(PDO::FETCH_ASSOC);
+
+$statesQuery = $pdo->query("SELECT DISTINCT state FROM reports WHERE state IS NOT NULL AND state != '' ORDER BY state");
+$states = $statesQuery->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
 <?php require_once __DIR__ . '/parts/head.php'; ?>
@@ -28,6 +62,60 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
               Отчеты
             </div>
             <div class="card-body">
+              <!-- Добавляем блок с фильтрами -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <i class="fas fa-filter me-1"></i>
+                      Фильтры
+                    </div>
+                    <div class="card-body">
+                      <form method="GET" action="reports.php" class="row g-3">
+                        <div class="col-md-4">
+                          <label for="author_id" class="form-label">Автор</label>
+                          <select class="form-select" id="author_id" name="author_id">
+                            <option value="">Все авторы</option>
+                            <?php foreach ($authors as $authorOption): ?>
+                              <option value="<?= e($authorOption['id']) ?>" <?= $author_id == $authorOption['id'] ? 'selected' : '' ?>>
+                                <?= e($authorOption['name']) ?>
+                              </option>
+                            <?php endforeach; ?>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="project_id" class="form-label">Название проекта</label>
+                          <select class="form-select" id="project_id" name="project_id">
+                            <option value="">Все проекты</option>
+                            <?php foreach ($projects as $projectOption): ?>
+                              <option value="<?= e($projectOption['id']) ?>" <?= $project_id == $projectOption['id'] ? 'selected' : '' ?>>
+                                <?= e($projectOption['name']) ?>
+                              </option>
+                            <?php endforeach; ?>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="state" class="form-label">Стадия</label>
+                          <select class="form-select" id="state" name="state">
+                            <option value="">Все стадии</option>
+                            <?php foreach ($states as $stateOption): ?>
+                              <option value="<?= e($stateOption) ?>" <?= $state === $stateOption ? 'selected' : '' ?>>
+                                <?= e($stateOption) ?>
+                              </option>
+                            <?php endforeach; ?>
+                          </select>
+                        </div>
+                        <div class="col-md-12 d-flex align-items-end">
+                          <button type="submit" class="btn btn-primary me-2">Применить фильтры</button>
+                          <a href="reports.php" class="btn btn-secondary">Сбросить</a>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Конец блока с фильтрами -->
+
               <?php if (count($reports) === 0): ?>
                 <p class="mb-0">Нет отчетов.</p>
               <?php else: ?>
