@@ -3,14 +3,26 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../db.php';
 
 require_login();
-$stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
-$projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$user = current_user();
+
+if ($user['role'] === 'admin') {
+  $stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
+  $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+  $stmt = $pdo->prepare("SELECT p.* FROM projects p
+                        JOIN project_users pu ON p.id = pu.project_id
+                        WHERE pu.user_id = ?
+                        ORDER BY p.created_at DESC");
+  $stmt->execute([$user['id']]);
+  $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $project_id = $_POST['project_id'];
   $state = $_POST['state'];
   $comment = $_POST['comment'];
-  $user = current_user();
+
   $user_id = $user['id'];
 
   $valid_states = [
