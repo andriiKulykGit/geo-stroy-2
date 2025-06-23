@@ -62,3 +62,13 @@
   border: 2px solid color-mix(in srgb, #ffc107 50%, #fff);
   background-color: color-mix(in srgb, #ffc107 10%, #fff);
 }
+
+.icon_logout {
+  -webkit-mask-image:url(../icons/logout.svg);
+  mask-image:url(../icons/logout.svg);
+  background-color: #272629;
+}
+
+.header__col_actions > a {
+  display: flex;
+}

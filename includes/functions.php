@@ -81,11 +81,9 @@ function the_header($title = '', $isFavoritesVisible = false)
 
     if ($isFavoritesVisible) {
         $favorites = '
-        <div class="header__col">
-            <a href="favorites.php" class="button-favorite">
-                <span class="icon icon_large icon_star icon_current-color"></span>
-            </a>
-        </div>
+        <a href="favorites.php" class="button-favorite">
+            <span class="icon icon_large icon_star icon_current-color"></span>
+        </a>
         ';
     }
 
@@ -99,7 +97,12 @@ function the_header($title = '', $isFavoritesVisible = false)
                     </button>
                     <span>' . $title . '</span>
                 </div>
+                <div class="header__col header__col_actions">
                 ' . $favorites . '
+                  <a href="logout.php">
+                    <span class="icon icon_large icon_logout"></span>
+                  </a>
+                </div>
             </div>
         </div>
     </header>';
