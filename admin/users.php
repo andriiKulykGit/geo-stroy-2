@@ -39,6 +39,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>Имя</th>
                       <th>Email</th>
                       <th>Роль</th>
+                      <th>Пароль</th>
                       <th>Действия</th>
                     </tr>
                   </thead>
@@ -48,6 +49,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <th>Имя</th>
                       <th>Email</th>
                       <th>Роль</th>
+                      <th>Пароль</th>
                       <th>Действия</th>
                     </tr>
                   </tfoot>
@@ -58,6 +60,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= e($user['name']) ?></td>
                         <td><?= e($user['email']) ?></td>
                         <td><?= e($user['role']) ?></td>
+                        <td><?= e($user['password']) ?></td>
                         <td>
                           <a href="user_edit.php?id=<?= $user['id'] ?>">Редактировать</a> |
                           <a href="user_delete.php?id=<?= $user['id'] ?>" onclick="return confirm('Удалить проект?')">Удалить</a> |
