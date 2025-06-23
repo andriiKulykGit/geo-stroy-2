@@ -22,11 +22,11 @@ require_once __DIR__ . '/../includes/functions.php';
 
                                     <form method="POST" action="login_process.php">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" name="email" required>
-                                            <label for="inputEmail">Email</label>
+                                            <input class="form-control" id="inputUsername" type="text" placeholder="" name="username" required>
+                                            <label for="inputUsername">Username</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputPassword" type="password" placeholder="Пароль" name="password" required>
+                                            <input class="form-control" id="inputPassword" type="text" placeholder="Пароль" name="password" required>
                                             <label for="inputPassword">Пароль</label>
                                         </div>
                                         <!-- <div class="form-check mb-3">

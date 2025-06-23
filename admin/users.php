@@ -37,6 +37,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                       <th>ID</th>
                       <th>Имя</th>
+                      <th>Username</th>
                       <th>Email</th>
                       <th>Роль</th>
                       <th>Пароль</th>
@@ -47,6 +48,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                       <th>ID</th>
                       <th>Имя</th>
+                      <th>Username</th>
                       <th>Email</th>
                       <th>Роль</th>
                       <th>Пароль</th>
@@ -58,6 +60,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                       <tr>
                         <td><?= e($user['id']) ?></td>
                         <td><?= e($user['name']) ?></td>
+                        <td><?= e($user['username']) ?></td>
                         <td><?= e($user['email']) ?></td>
                         <td><?= e($user['role']) ?></td>
                         <td><?= e($user['password']) ?></td>

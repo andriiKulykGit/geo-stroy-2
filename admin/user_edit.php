@@ -48,6 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <input class="form-control" id="inputName" type="text" value="<?= $user['name'] ?>" name="name" required>
                     </div>
                     <div class="mb-3">
+                      <label class="mb-1" for="inputUsername">Username</label>
+                      <input class="form-control" id="inputUsername" type="text" value="<?= $user['name'] ?>" name="username" required>
+                    </div>
+                    <div class="mb-3">
                       <label class="mb-1" for="inputEmail">Email</label>
                       <input class="form-control" id="inputEmail" type="email" value="<?= $user['email'] ?>" name="email" required>
                     </div>

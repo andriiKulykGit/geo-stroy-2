@@ -48,6 +48,7 @@ CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     role TEXT CHECK(role IN ('admin', 'user', 'viewer')) NOT NULL,
     favorites TEXT DEFAULT '[]',
@@ -113,11 +114,12 @@ CREATE TABLE password_reset_codes (
 $db->exec($sql);
 
 $adminName = getenv('ADMIN_NAME');
+$adminUsername = getenv('ADMIN_USERNAME');
 $adminEmail = getenv('ADMIN_EMAIL');
 $adminPassword = getenv('ADMIN_PASSWORD');
 $adminRole = 'admin';
 
-$stmt = $db->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-$stmt->execute([$adminName, $adminEmail, $adminPassword, $adminRole]);
+$stmt = $db->prepare("INSERT INTO users (name, username, email, password, role) VALUES (?, ?, ?, ?, ?)");
+$stmt->execute([$adminName, $adminUsername, $adminEmail, $adminPassword, $adminRole]);
 
 echo "База данных и таблицы успешно созданы.\n";

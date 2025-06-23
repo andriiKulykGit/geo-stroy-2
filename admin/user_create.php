@@ -6,11 +6,12 @@ require_login();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
   $email = $_POST['email'];
+  $username = $_POST['username'];
   $password = $_POST['password'];
   $role = $_POST['role'];
 
-  $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?,?,?,?)");
-  $stmt->execute([$name, $email, $password, $role]);
+  $stmt = $pdo->prepare("INSERT INTO users (name, email, username, password, role) VALUES (?,?,?,?,?)");
+  $stmt->execute([$name, $email, $username, $password, $role]);
 
   header("Location: users.php");
   exit;
@@ -41,6 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="mb-3">
                       <label class="mb-1" for="inputName">Имя</label>
                       <input class="form-control" id="inputName" type="text" placeholder=" " name="name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="mb-1" for="inputUsername">Username</label>
+                      <input class="form-control" id="inputUsername" type="text" placeholder=" " name="username" required>
                     </div>
                     <div class="mb-3">
                       <label class="mb-1" for="inputEmail">Email</label>

@@ -2,11 +2,11 @@
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../db.php';
 
-$email = $_POST['email'] ?? '';
+$username = $_POST['username'] ?? '';
 $password = $_POST['password'] ?? '';
 
-$stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
-$stmt->execute([$email]);
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
+$stmt->execute([$username]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($user && $password == $user['password']) {

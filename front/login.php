@@ -20,8 +20,8 @@ if (is_logged_in()) {
             <div class="form__error" data-aos="fade-up" style="color:red"><?= e($error) ?></div>
           <?php endif; ?>
           <div class="input" data-aos="fade-up">
-            <input id="email" name="email" placeholder="Email" class="input__control" type="email" required>
-            <label for="email" class="input__prepend">
+            <input id="username" name="username" placeholder="Username" class="input__control" type="text" required>
+            <label for="username" class="input__prepend">
               <span class="icon icon_user icon_current-color icon_medium"></span>
             </label>
           </div>
