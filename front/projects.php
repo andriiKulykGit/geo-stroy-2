@@ -7,7 +7,7 @@ require_login();
 $user = current_user();
 $favorites = json_decode($user['favorites'] ?? '[]', true);
 
-if ($user['role'] === 'admin') {
+if ($user['role'] === 'admin' || $user['role'] === 'viewer') {
   $stmt = $pdo->query("SELECT * FROM projects ORDER BY created_at DESC");
   $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
@@ -36,7 +36,7 @@ if ($user['role'] === 'admin') {
             if($isFavorites) {
               echo 'project_is-favorite';
             }
-            ?>" data-aos="fade-up" href="create-report.php?project_id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" draggable="false">
+            ?>" data-aos="fade-up" href="reports_by_project.php?project_id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" draggable="false">
               <div class="project__background project__background_favorite">
                 <span class="icon icon_star icon_medium icon_current-color"></span>
                 <span>В избранное</span>

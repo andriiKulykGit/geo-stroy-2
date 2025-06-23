@@ -75,90 +75,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php the_header('Создать отчет') ?>
       <div class="create">
         <div class="container">
+          <?php
+          if ($user['role'] === 'viewer') {
+            echo 'Вы не можете добавлять отчеты.';
+          } else {
+          ?>
+            <form action="create-report.php" method="POST" class="create__body" id="form">
+              <input type="hidden" name="uploaded_files" id="uploaded_files" value="[]">
+              <div class="select" data-aos="fade-up" style="z-index:3">
+                <div class="select__box">
+                  <div class="select__prepend">
+                    <span class="icon icon_medium icon_location icon_current-color"></span>
+                  </div>
+                  <div class="select__inner">
+                    <div
+                      class="select__value"
+                      id="project"
+                      data-value="<?php if ($foundProject) echo $foundProject['id'] ?>"><?php
+                      if ($foundProject) {
+                        echo '<span>' . $foundProject["name"] . '</span>';
+                      }
+                      ?></div>
+                    <div class="select__label">Проект</div>
+                  </div>
+                  <div class="select__chevron">
+                    <span class="icon icon_medium icon_chevrown-down icon_current-color"></span>
+                  </div>
+                </div>
+                <div class="select__dropdown">
+                  <ul class="select__list">
+                    <?php
+                    foreach ($projects as $p) {
+                    ?>
+                      <li class="select__li">
+                        <button type="button" class="select__item" data-value="<?= $p['id'] ?>"><span><?= $p['name'] ?></span></button>
+                      </li>
+                    <?php
+                    }
+                    ?>
+                  </ul>
+                </div>
+              </div>
+              <input type="hidden" name="project_id" id="project_id">
+              <input type="hidden" name="state" id="state_value">
+              <div class="select" data-aos="fade-up">
+                <div class="select__box">
+                  <div class="select__prepend">
+                    <span class="icon icon_medium icon_checklist icon_current-color"></span>
+                  </div>
+                  <div class="select__inner">
+                    <div class="select__value" id="state" data-value></div>
+                    <div class="select__placeholder">Выберите статус</div>
+                  </div>
+                  <div class="select__chevron">
+                    <span class="icon icon_medium icon_chevrown-down icon_current-color"></span>
+                  </div>
+                </div>
+                <div class="select__dropdown">
+                  <ul class="select__list">
+                    <?php
+                    $items = [
+                      [
+                        'text' => 'Разработка тех. проекта',
+                        'modifier' => 'gray'
+                      ],
+                      [
+                        'text' => 'Разработка проекта ОВОС',
+                        'modifier' => 'blue'
+                      ],
+                      [
+                        'text' => 'Проведение общ. слушаний',
+                        'modifier' => 'purple'
+                      ],
+                      [
+                        'text' => 'Мобилизация',
+                        'modifier' => 'red'
+                      ],
+                      [
+                        'text' => 'Полевые работы',
+                        'modifier' => 'yellow'
+                      ],
+                      [
+                        'text' => 'Завершено',
+                        'modifier' => 'green'
+                      ]
+                    ];
 
-          <form action="create-report.php" method="POST" class="create__body" id="form">
-            <input type="hidden" name="uploaded_files" id="uploaded_files" value="[]">
-            <div class="select" data-aos="fade-up" style="z-index:3">
-              <div class="select__box">
-                <div class="select__prepend">
-                  <span class="icon icon_medium icon_location icon_current-color"></span>
-                </div>
-                <div class="select__inner">
-                  <div
-                    class="select__value"
-                    id="project"
-                    data-value="<?php if ($foundProject) echo $foundProject['id'] ?>"><?php
-                                                                                      if ($foundProject) {
-                                                                                        echo '<span>' . $foundProject['name'] . '</span>';
-                                                                                      }
-                                                                                      ?></div>
-                  <div class="select__label">Проект</div>
-                </div>
-                <div class="select__chevron">
-                  <span class="icon icon_medium icon_chevrown-down icon_current-color"></span>
-                </div>
-              </div>
-              <div class="select__dropdown">
-                <ul class="select__list">
-                  <?php
-                  foreach ($projects as $p) {
-                  ?>
-                    <li class="select__li">
-                      <button type="button" class="select__item" data-value="<?= $p['id'] ?>"><span><?= $p['name'] ?></span></button>
-                    </li>
-                  <?php
-                  }
-                  ?>
-                </ul>
-              </div>
-            </div>
-            <input type="hidden" name="project_id" id="project_id">
-            <input type="hidden" name="state" id="state_value">
-            <div class="select" data-aos="fade-up">
-              <div class="select__box">
-                <div class="select__prepend">
-                  <span class="icon icon_medium icon_checklist icon_current-color"></span>
-                </div>
-                <div class="select__inner">
-                  <div class="select__value" id="state" data-value></div>
-                  <div class="select__placeholder">Выберите статус</div>
-                </div>
-                <div class="select__chevron">
-                  <span class="icon icon_medium icon_chevrown-down icon_current-color"></span>
-                </div>
-              </div>
-              <div class="select__dropdown">
-                <ul class="select__list">
-                  <?php
-                  $items = [
-                    [
-                      'text' => 'Разработка тех. проекта',
-                      'modifier' => 'gray'
-                    ],
-                    [
-                      'text' => 'Разработка проекта ОВОС',
-                      'modifier' => 'blue'
-                    ],
-                    [
-                      'text' => 'Проведение общ. слушаний',
-                      'modifier' => 'purple'
-                    ],
-                    [
-                      'text' => 'Мобилизация',
-                      'modifier' => 'red'
-                    ],
-                    [
-                      'text' => 'Полевые работы',
-                      'modifier' => 'yellow'
-                    ],
-                    [
-                      'text' => 'Завершено',
-                      'modifier' => 'green'
-                    ]
-                  ];
-
-                  foreach ($items as $item) {
-                    echo '
+                    foreach ($items as $item) {
+                      echo '
                     <li class="select__li">
                       <button type="button" class="select__item" data-value="' . $item['text'] . '">
                         <span>
@@ -167,35 +171,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       </button>
                     </li>
                     ';
-                  }
-                  ?>
-                </ul>
+                    }
+                    ?>
+                  </ul>
+                </div>
               </div>
-            </div>
-            <div class="input" data-aos="fade-up">
-              <textarea id="message" name="comment" placeholder="Комментарий к отчету" class="input__control " wrap="soft"></textarea>
-              <label for="message" class="input__prepend">
-                <span class="icon icon_comment icon_current-color icon_medium"></span>
+              <div class="input" data-aos="fade-up">
+                <textarea id="message" name="comment" placeholder="Комментарий к отчету" class="input__control " wrap="soft"></textarea>
+                <label for="message" class="input__prepend">
+                  <span class="icon icon_comment icon_current-color icon_medium"></span>
+                </label>
+              </div>
+              <label class="dropzone" data-aos="fade-up">
+                <input
+                  type="file"
+                  accept=".doc,.docx,.png,.jpg,.jpeg,.pdf,.xls,.xlsx,.excel,.word,.txt"
+                  class="visually-hidden dropzone__input"
+                  multiple>
+                <div class="dropzone__icon">
+                  <span class="icon icon_current-color icon_cloud icon_large"></span>
+                </div>
+                <div class="dropzone__inner">
+                  <div class="dropzone__title">Выберите файл</div>
+                  <div class="dropzone__subtitle">Форматы WORD, PNG, JPEG, PDF, EXCEL до 50 МБ.</div>
+                </div>
+                <div class="button button_small">Выбрать файл</div>
               </label>
-            </div>
-            <label class="dropzone" data-aos="fade-up">
-              <input
-                type="file"
-                accept=".doc,.docx,.png,.jpg,.jpeg,.pdf,.xls,.xlsx,.excel,.word,.txt"
-                class="visually-hidden dropzone__input"
-                multiple>
-              <div class="dropzone__icon">
-                <span class="icon icon_current-color icon_cloud icon_large"></span>
-              </div>
-              <div class="dropzone__inner">
-                <div class="dropzone__title">Выберите файл</div>
-                <div class="dropzone__subtitle">Форматы WORD, PNG, JPEG, PDF, EXCEL до 50 МБ.</div>
-              </div>
-              <div class="button button_small">Выбрать файл</div>
-            </label>
-            <div class="create__files"></div>
-            <button class="button" type="submit" data-aos="fade-up">Отправить отчет</button>
-          </form>
+              <div class="create__files"></div>
+              <button class="button" type="submit" data-aos="fade-up">Отправить отчет</button>
+            </form>
+          <?php
+          }
+          ?>
         </div>
       </div>
       <?php the_footer([1, 0, 1]) ?>
