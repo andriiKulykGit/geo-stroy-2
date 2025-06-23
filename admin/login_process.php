@@ -9,7 +9,7 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
 $stmt->execute([$email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($user && verify_password($password, $user['password'])) {
+if ($user && $password == $user['password']) {
     $_SESSION['user'] = $user;
     header("Location: index.php");
     exit;

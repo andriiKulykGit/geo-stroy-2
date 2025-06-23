@@ -35,16 +35,6 @@ function current_user()
     return $_SESSION['user'] ?? null;
 }
 
-function hash_password($password)
-{
-    return password_hash($password, PASSWORD_DEFAULT);
-}
-
-function verify_password($password, $hash)
-{
-    return password_verify($password, $hash);
-}
-
 function generate_code($length = 4)
 {
     return str_pad(random_int(0, pow(10, $length) - 1), $length, '0', STR_PAD_LEFT);

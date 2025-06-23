@@ -114,7 +114,7 @@ $db->exec($sql);
 
 $adminName = getenv('ADMIN_NAME');
 $adminEmail = getenv('ADMIN_EMAIL');
-$adminPassword = password_hash(getenv('ADMIN_PASSWORD'), PASSWORD_DEFAULT);
+$adminPassword = getenv('ADMIN_PASSWORD');
 $adminRole = 'admin';
 
 $stmt = $db->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");

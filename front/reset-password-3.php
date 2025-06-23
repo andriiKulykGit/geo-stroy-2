@@ -18,10 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     set_flash('error', 'Пароль должен быть не менее 6 символов');
   } else {
     $pdo = require __DIR__ . '/../db.php';
-    $hashedPassword = hash_password($password);
 
     $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE email = ?");
-    $stmt->execute([$hashedPassword, $_SESSION['reset_email']]);
+    $stmt->execute([$password, $_SESSION['reset_email']]);
 
     $stmt = $pdo->prepare("DELETE FROM password_reset_codes WHERE email = ?");
     $stmt->execute([$_SESSION['reset_email']]);
