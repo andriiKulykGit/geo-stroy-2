@@ -20,7 +20,7 @@ try {
         header("Location: projects.php");
         exit;
     } else {
-        set_flash('error', 'Неверный email или пароль');
+        set_flash('error', 'Неверный username или пароль');
         header("Location: login.php");
         exit;
     }
