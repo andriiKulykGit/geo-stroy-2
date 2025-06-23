@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <select class="form-select" id="inputRole" name="role">
                         <option value="user">Пользователь</option>
                         <option value="admin">Администратор</option>
+                        <option value="viewer">Просмотрщик</option>
                       </select>
                     </div>
                     <div class="d-flex mt-4 mb-0">

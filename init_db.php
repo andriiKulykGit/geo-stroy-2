@@ -49,7 +49,7 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    role TEXT CHECK(role IN ('admin', 'user')) NOT NULL,
+    role TEXT CHECK(role IN ('admin', 'user', 'viewer')) NOT NULL,
     favorites TEXT DEFAULT '[]',
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );

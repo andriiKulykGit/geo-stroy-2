@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="mb-3">
                       <select class="form-select" name="role" id="inputRole">
                         <?php
-                        $roles = ['user', 'admin'];
+                        $roles = ['user', 'admin', 'viewer'];
                         foreach ($roles as $r) {
                           $selected = $r === $user['role'] ? 'selected' : '';
                           echo "<option $selected>$r</option>";
