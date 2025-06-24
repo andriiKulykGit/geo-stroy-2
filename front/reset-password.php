@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
+require __DIR__ . '/../db.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $email = trim($_POST['email'] ?? '');
 
@@ -7,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     set_flash('error', 'Пожалуйста, введите email');
   } else {
     try {
-      $pdo = require __DIR__ . '/../db.php';
       if (!($pdo instanceof PDO)) {
         throw new Exception('Ошибка подключения к базе данных');
       }
