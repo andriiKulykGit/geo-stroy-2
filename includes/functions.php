@@ -258,8 +258,7 @@ function notify_admins_password_reset($user, $pdo) {
         $headers = array(
             'MIME-Version: 1.0',
             'Content-type: text/html; charset=UTF-8',
-            'From: ' . 'Security <security@' . $_SERVER['HTTP_HOST'] . '>',
-            'Reply-To: noreply@' . $_SERVER['HTTP_HOST'],
+            'From: ' . 'security@' . $_SERVER['HTTP_HOST'] . "\r\n",
             'X-Mailer: PHP/' . phpversion(),
             'X-Priority: 2'
         );
