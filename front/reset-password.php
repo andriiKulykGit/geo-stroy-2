@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $email = $_POST['email'] ?? '';
-  header("Location: success_password.php");
+  $email = trim($_POST['email'] ?? '');
 
   if (empty($email)) {
     set_flash('error', 'Пожалуйста, введите email');
@@ -30,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     } catch (Exception $e) {
       set_flash('error', 'Произошла ошибка. Попробуйте позже.');
+      error_log("Ошибка восстановления пароля: " . $e->getMessage());
     }
   }
 }
