@@ -26,7 +26,7 @@ if (is_logged_in()) {
             </label>
           </div>
           <div class="input" data-aos="fade-up">
-            <input id="password" name="password" placeholder="Пароль" class="input__control" type="password" required>
+            <input id="password" name="password" placeholder="Пароль" class="input__control" type="text" required>
             <label for="password" class="input__prepend">
               <span class="icon icon_lock icon_current-color icon_medium"></span>
             </label>
