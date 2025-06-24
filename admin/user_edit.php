@@ -10,12 +10,13 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $name = $_POST['name'];
+  $username = $_POST['username'];
   $email = $_POST['email'];
   $password = $_POST['password'];
   $role = $_POST['role'];
 
-  $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?,  password = ?, role = ? WHERE id = ?");
-  $stmt->execute([$name, $email, $password, $role, $id]);
+  $stmt = $pdo->prepare("UPDATE users SET name = ?, username = ?, email = ?,  password = ?, role = ? WHERE id = ?");
+  $stmt->execute([$name, $username, $email, $password, $role, $id]);
 
   header("Location: users.php");
   exit;

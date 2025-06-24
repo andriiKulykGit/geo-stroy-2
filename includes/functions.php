@@ -1,5 +1,16 @@
 <?php
+// 10 years
+$lifetime = 60 * 60 * 24 * 365 * 10;
 
+session_set_cookie_params([
+    'lifetime' => $lifetime,
+    'path' => '/',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
+
+ini_set('session.gc_maxlifetime', $lifetime);
 session_start();
 
 function set_flash($key, $message)
