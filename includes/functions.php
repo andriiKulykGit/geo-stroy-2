@@ -200,11 +200,11 @@ function send_reset_code($email, $code) {
 function notify_admins_password_reset($user, $pdo) {
     $config = require __DIR__ . '/../config.php';
     try {
-        $stmt = $pdo->prepare("SELECT email FROM users WHERE role = 'admin'");
+        $stmt = $pdo->prepare("SELECT email FROM users WHERE role = 'admin' LIMIT 1");
         $stmt->execute();
-        $admins = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $admin_email = $stmt->fetch(PDO::FETCH_COLUMN);
 
-        if (empty($admins)) {
+        if (empty($admin_email)) {
             return false;
         }
 
@@ -264,14 +264,7 @@ function notify_admins_password_reset($user, $pdo) {
           'X-Mailer: PHP/' . phpversion()
       );
 
-        $success = true;
-        foreach ($admins as $admin_email) {
-            if (!mail($admin_email, $subject, $message, implode("\r\n", $headers))) {
-                $success = false;
-            }
-        }
-
-        return $success;
+        return mail($admin_email, $subject, $message, implode("\r\n", $headers));
 
     } catch (Exception $e) {
         error_log("Ошибка отправки уведомления администраторам: " . $e->getMessage());
