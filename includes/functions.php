@@ -2,10 +2,12 @@
 // 10 years
 $lifetime = 60 * 60 * 24 * 365 * 10;
 
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
+
 session_set_cookie_params([
     'lifetime' => $lifetime,
     'path' => '/',
-    'secure' => true,
+    'secure' => $isHttps,
     'httponly' => true,
     'samesite' => 'Lax'
 ]);
