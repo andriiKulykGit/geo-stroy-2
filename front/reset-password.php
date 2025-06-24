@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $email = $_POST['email'] ?? '';
+  header("Location: success_password.php");
 
   if (empty($email)) {
     set_flash('error', 'Пожалуйста, введите email');
@@ -13,17 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         throw new Exception('Ошибка подключения к базе данных');
       }
 
-      $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+      $stmt = $pdo->prepare("SELECT id, name, username, email FROM users WHERE email = ?");
       $stmt->execute([$email]);
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      if ($stmt->fetch()) {
-        $code = generate_code(4);
-        $stmt = $pdo->prepare("INSERT INTO password_reset_codes (email, code) VALUES (?, ?)");
-        $stmt->execute([$email, $code]);
-
-        if (send_reset_code($email, $code)) {
+      if ($user) {
+        if (notify_admins_password_reset($user, $pdo)) {
           $_SESSION['reset_email'] = $email;
-          header("Location: reset-password-2.php");
+          header("Location: success_password.php");
           exit;
         } else {
           set_flash('error', 'Ошибка отправки письма. Попробуйте позже.');
@@ -45,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main class="main" data-barba="container" data-barba-namespace="login">
       <?php require_once __DIR__ . '/parts/header-shorted.php'; ?>
       <div class="container">
-        <form method="post" action="" class="form">
+        <form method="post" action="#" class="form">
           <div class="form__title" data-aos="fade-up">Восстановление пароля</div>
           <?php if ($error = get_flash('error')): ?>
             <div class="form__error" data-aos="fade-up" style="color:red"><?= e($error) ?></div>

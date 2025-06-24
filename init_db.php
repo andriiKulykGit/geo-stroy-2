@@ -102,13 +102,6 @@ CREATE TABLE reports (
     files TEXT DEFAULT '[]',
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TABLE password_reset_codes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL,
-    code TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
 ";
 
 $db->exec($sql);

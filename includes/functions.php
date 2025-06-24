@@ -159,9 +159,7 @@ function the_footer($visibleItems = [true, true, true])
 
 function send_reset_code($email, $code) {
     $config = require __DIR__ . '/../config.php';
-
     $subject = 'Восстановление пароля - ' . $config['site_name'];
-
     $message = "
     <html>
     <head>
@@ -197,4 +195,86 @@ function send_reset_code($email, $code) {
     );
 
     return mail($email, $subject, $message, implode("\r\n", $headers));
+}
+
+function notify_admins_password_reset($user, $pdo) {
+    try {
+        $stmt = $pdo->prepare("SELECT email FROM users WHERE role = 'admin'");
+        $stmt->execute();
+        $admins = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        if (empty($admins)) {
+            return false;
+        }
+
+        $subject = 'Запрос на сброс пароля';
+        $message = "
+        <html>
+        <head>
+            <title>Запрос на сброс пароля</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .user-info { background: #f8f9fa; padding: 15px; border-left: 4px solid #dc3545; margin: 15px 0; }
+                .user-info h3 { margin-top: 0; color: #dc3545; }
+                .info-row { margin: 8px 0; }
+                .info-label { font-weight: bold; color: #495057; }
+                .footer { margin-top: 20px; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 15px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <h2>🔐 Запрос на сброс пароля</h2>
+                <p>Уважаемый администратор!</p>
+                <p>Пользователь запросил сброс пароля на сайте.</p>
+
+                <div class='user-info'>
+                    <h3>Информация о пользователе:</h3>
+                    <div class='info-row'>
+                        <span class='info-label'>Имя:</span> " . htmlspecialchars($user['name'] ?? 'Не указано') . "
+                    </div>
+                    <div class='info-row'>
+                        <span class='info-label'>Username:</span> " . htmlspecialchars($user['username'] ?? 'Не указано') . "
+                    </div>
+                    <div class='info-row'>
+                        <span class='info-label'>Email:</span> " . htmlspecialchars($user['email']) . "
+                    </div>
+                    <div class='info-row'>
+                        <span class='info-label'>Дата и время:</span> " . date('d.m.Y H:i:s') . "
+                    </div>
+                </div>
+
+                <p><strong>Внимание:</strong> Пользователю был отправлен код для восстановления пароля. Если это подозрительная активность, рекомендуется связаться с пользователем для подтверждения.</p>
+
+                <div class='footer'>
+                    <p>Это уведомление отправлено автоматически системой безопасности сайта.</p>
+                    <p>Дата отправки: " . date('d.m.Y H:i:s') . "</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ";
+
+        $headers = array(
+            'MIME-Version: 1.0',
+            'Content-type: text/html; charset=UTF-8',
+            'From: ' . 'Security <security@' . $_SERVER['HTTP_HOST'] . '>',
+            'Reply-To: noreply@' . $_SERVER['HTTP_HOST'],
+            'X-Mailer: PHP/' . phpversion(),
+            'X-Priority: 2'
+        );
+
+        $success = true;
+        foreach ($admins as $admin_email) {
+            if (!mail($admin_email, $subject, $message, implode("\r\n", $headers))) {
+                $success = false;
+            }
+        }
+
+        return $success;
+
+    } catch (Exception $e) {
+        error_log("Ошибка отправки уведомления администраторам: " . $e->getMessage());
+        return false;
+    }
 }
