@@ -198,6 +198,7 @@ function send_reset_code($email, $code) {
 }
 
 function notify_admins_password_reset($user, $pdo) {
+    $config = require __DIR__ . '/../config.php';
     try {
         $stmt = $pdo->prepare("SELECT email FROM users WHERE role = 'admin'");
         $stmt->execute();
@@ -256,12 +257,12 @@ function notify_admins_password_reset($user, $pdo) {
         ";
 
         $headers = array(
-            'MIME-Version: 1.0',
-            'Content-type: text/html; charset=UTF-8',
-            'From: ' . 'security@' . $_SERVER['HTTP_HOST'],
-            'X-Mailer: PHP/' . phpversion(),
-            'X-Priority: 2'
-        );
+          'MIME-Version: 1.0',
+          'Content-type: text/html; charset=UTF-8',
+          'From: ' . $config['site_name'] . ' <noreply@' . $_SERVER['HTTP_HOST'] . '>',
+          'Reply-To: noreply@' . $_SERVER['HTTP_HOST'],
+          'X-Mailer: PHP/' . phpversion()
+      );
 
         $success = true;
         foreach ($admins as $admin_email) {
